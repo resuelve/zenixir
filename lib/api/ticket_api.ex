@@ -128,9 +128,9 @@ defmodule Zendesk.TicketApi do
 
   `requester_id`: The requester ID to get the ticket for
   """
-  def show_ticket(account, requester_id: requeser_id) do
+  def show_ticket(account, requester_id: requester_id) do
     perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@by_requester, [requeser_id]))
+    endpoint: ExPrintf.sprintf(@by_requester, [requester_id]))
   end
 
   @doc """
