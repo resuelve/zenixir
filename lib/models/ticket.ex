@@ -30,13 +30,17 @@ defmodule Zendesk.Ticket do
   `name`: requester name
 
   `email`: requester email
+
+  `phone`: requester phone
   """
   def add_requester(ticket, name: name, email: email) do
     Map.put(ticket, :requester, %{name: name, email: email})
   end
-
   def add_requester(ticket, email: email) do
     Map.put(ticket, :requester, %{name: email, email: email})
+  end
+  def add_requester(ticket, name: name, phone: phone) do
+    Map.put(ticket, :requester, %{name: name, phone: phone})
   end
 
   @doc """
@@ -190,6 +194,13 @@ defmodule Zendesk.Ticket do
   """
   def set_assignee_id(ticket, assignee_id) do
     Map.put(ticket, :assignee_id, assignee_id)
+  end
+
+  @doc """
+  Sets the ticket author id
+  """
+  def set_author_id(ticket, author_id) do
+    put_in(ticket, [:comment, :author_id], author_id)
   end
 
   @doc """
