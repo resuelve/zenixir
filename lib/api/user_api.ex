@@ -12,9 +12,25 @@ defmodule Zendesk.UserApi do
   @searches_users "/users/search.json?query=%s"
   @autocomplete_users "/users/autocomplete.json?name=\"%s\""
   @current_user "/users/me.json"
+  @create_or_update_user "/users/create_or_update.json"
 
   use Zendesk.CommonApi
 
+  @doc """
+  Creates or updates user
+  """
+  def create_or_update(account, name: name, email: email) do
+    user = %{user: %{name: name, email: email}}
+    json = Poison.encode!(user)
+    perform_request(&parse_get_user/1, account: account, verb: :post,
+    endpoint: @create_or_update_user, body: json, headers: headers())
+  end
+  def create_or_update(account, name: name, email: email, phone: phone) do
+    user = %{user: %{name: name, email: email, phone: phone}}
+    json = Poison.encode!(user)
+    perform_request(&parse_get_user/1, account: account, verb: :post,
+    endpoint: @create_or_update_user, body: json, headers: headers())
+  end
 
   @doc """
   Get all the users
@@ -95,6 +111,10 @@ defmodule Zendesk.UserApi do
   end
 
   # Private
+
+  defp headers do
+    ["Content-Type": "application/json"]
+  end
 
   defp parse_get_users(response) do
     Zendesk.User.from_json_array(response)
