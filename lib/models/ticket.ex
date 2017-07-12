@@ -42,6 +42,9 @@ defmodule Zendesk.Ticket do
   def add_requester(ticket, name: name, phone: phone) do
     Map.put(ticket, :requester, %{name: name, phone: phone})
   end
+  def add_requester(ticket, name: name, phone: phone, email: email) do
+    Map.put(ticket, :requester, %{name: name, phone: phone, email: email})
+  end
 
   @doc """
   Add a custom field in the ticket
