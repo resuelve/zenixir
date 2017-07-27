@@ -10,9 +10,11 @@ defmodule Zendesk.Ticket do
   Create a new Ticket map with a comment
 
   `comment`: the ticket comment
+
+  `public`: the ticket visibility
   """
-  def new(comment) do
-    %{comment: %{body: comment}}
+  def new(comment, public \\ true) do
+    %{comment: %{body: comment, public: public}}
   end
 
   @doc """
