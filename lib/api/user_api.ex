@@ -32,6 +32,25 @@ defmodule Zendesk.UserApi do
     endpoint: @create_or_update_user, body: json, headers: headers())
   end
 
+  def update(account, user_id, name: name) do
+    user = %{user: %{name: name}}
+    json = Poison.encode!(user)
+    perform_request(&parse_get_user/1, account: account, verb: :put,
+    endpoint: ExPrintf.sprintf(@user_with_id, [user_id]), body: json, headers: headers())
+  end
+  def update(account, user_id, name: name, email: email) do
+    user = %{user: %{name: name, email: email}}
+    json = Poison.encode!(user)
+    perform_request(&parse_get_user/1, account: account, verb: :put,
+    endpoint: ExPrintf.sprintf(@user_with_id, [user_id]), body: json, headers: headers())
+  end
+  def update(account, user_id, name: name, email: email, phone: phone) do
+    user = %{user: %{name: name, email: email, phone: phone}}
+    json = Poison.encode!(user)
+    perform_request(&parse_get_user/1, account: account, verb: :put,
+    endpoint: ExPrintf.sprintf(@user_with_id, [user_id]), body: json, headers: headers())
+  end
+
   @doc """
   Get all the users
   """
