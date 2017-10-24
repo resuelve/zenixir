@@ -32,6 +32,10 @@ defmodule Zendesk.UserApi do
     endpoint: @create_or_update_user, body: json, headers: headers())
   end
 
+  @doc """
+  Updates the user
+  """
+  @spec update(Zendesk.Account, String.t, list) :: map
   def update(account, user_id, name: name) do
     user = %{user: %{name: name}}
     json = Poison.encode!(user)
