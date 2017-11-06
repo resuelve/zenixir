@@ -59,7 +59,13 @@ defmodule Zendesk.UserApi do
   Get all the users
   """
   def all_users(account) do
-    perform_request(&parse_get_users/1, account: account, verb: :get, endpoint: @endpoint)
+    case perform_request(&parse_get_users/1, account: account, verb: :get, endpoint: @endpoint) do
+      {:ok, response} ->
+        pagination(response, account)
+        |> List.flatten
+      _ ->
+        []
+    end
   end
 
   @doc """
@@ -147,4 +153,17 @@ defmodule Zendesk.UserApi do
     Zendesk.User.from_json(response)
   end
 
+  defp pagination(response, account) do
+    if Map.get(response, :next_page) == nil do
+      [Map.get(response, :users)]
+    else
+      new_endpoint = Map.get(response, :next_page)
+      case perform_request(&parse_get_users/1, account: account, verb: :get, endpoint: new_endpoint) do
+        {:ok, new_response} ->
+          [Map.get(response, :users) | pagination(new_response, account)]
+        _ ->
+          []
+      end
+    end
+  end
 end
