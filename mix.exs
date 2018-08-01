@@ -36,11 +36,11 @@ defmodule Zenixir.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:httpoison, "~> 0.9"},
-      {:poison, "~> 2.0"},
+      {:httpoison, "~> 1.2"},
+      {:poison, "~> 3.0"},
       {:exprintf, github: "parroty/exprintf"},
-      {:exvcr, "~> 0.7", only: :test},
-      {:excoveralls, "~> 0.5", only: :test},
+      {:exvcr, "~> 0.10", only: :test},
+      {:excoveralls, "~> 0.9.1"},
       {:inch_ex, ">= 0.0.0", only: :docs},
       {:ex_doc, "~> 0.12", only: :dev}
     ]

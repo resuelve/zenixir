@@ -61,7 +61,8 @@ defmodule Zendesk.UserApi do
   def all_users(account) do
     case perform_request(&parse_get_users/1, account: account, verb: :get, endpoint: @endpoint) do
       {:ok, response} ->
-        pagination(response, account)
+        response
+        |> pagination(account)
         |> List.flatten
       _ ->
         []
