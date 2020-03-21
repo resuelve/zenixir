@@ -4,7 +4,6 @@ defmodule TicketTest do
   use TestHelper
   use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
 
-
   test "it can create a bare ticket" do
     ticket = Zendesk.Ticket.new("Hello")
     assert ticket.comment.body == "Hello"
@@ -32,9 +31,10 @@ defmodule TicketTest do
   end
 
   test "it can create a ticket with assignee_id and assignee_email" do
-    ticket = Ticket.new("Hello")
-    |> Ticket.set_assignee_id("123")
-    |> Ticket.set_assignee_email("asd@asd.asd")
+    ticket =
+      Ticket.new("Hello")
+      |> Ticket.set_assignee_id("123")
+      |> Ticket.set_assignee_email("asd@asd.asd")
 
     assert ticket.comment.body == "Hello"
     assert ticket.assignee_id == "123"
@@ -60,11 +60,12 @@ defmodule TicketTest do
   end
 
   test "it can create a ticket with problem_id due_at, updated_stamp and safe_update" do
-    ticket = Ticket.new("Hello")
-    |> Ticket.set_problem_id("1")
-    |> Ticket.set_due_at("2")
-    |> Ticket.set_safe_update(true)
-    |> Ticket.set_updated_stamp("3")
+    ticket =
+      Ticket.new("Hello")
+      |> Ticket.set_problem_id("1")
+      |> Ticket.set_due_at("2")
+      |> Ticket.set_safe_update(true)
+      |> Ticket.set_updated_stamp("3")
 
     assert ticket.problem_id == "1"
     assert ticket.due_at == "2"
@@ -73,9 +74,10 @@ defmodule TicketTest do
   end
 
   test "it can create a ticket with external_id forum_topic_id" do
-    ticket = Ticket.new("Hello")
-    |> Ticket.set_external_id("222")
-    |> Ticket.set_forum_topic_id("123")
+    ticket =
+      Ticket.new("Hello")
+      |> Ticket.set_external_id("222")
+      |> Ticket.set_forum_topic_id("123")
 
     assert ticket.external_id == "222"
     assert ticket.forum_topic_id == "123"
@@ -173,216 +175,226 @@ defmodule TicketTest do
     Ticket.to_json(ticket)
   end
 
-
   test "it can create a ticket" do
     use_cassette "create_ticket" do
-      ticket = Ticket.new("Test Ticket")
-      |> Ticket.set_priority("urgent")
-      |> Ticket.set_type("problem")
-      |> Ticket.set_subject("The subject")
+      ticket =
+        Ticket.new("Test Ticket")
+        |> Ticket.set_priority("urgent")
+        |> Ticket.set_type("problem")
+        |> Ticket.set_subject("The subject")
 
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> create_ticket(ticket: ticket)
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> create_ticket(ticket: ticket)
 
       assert res.subject == "The subject"
     end
   end
 
-
   test "it can create a delete a ticket" do
     use_cassette "delete_tocket" do
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> delete_ticket(ticket_id: "399")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> delete_ticket(ticket_id: "399")
 
       assert res == :ok
     end
   end
 
-
   test "it can get tickets collaborators" do
     use_cassette "ticket_collaborators" do
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> ticket_collaborators(ticket_id: "603")
+      {:ok, %{users: [data]}} =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> ticket_collaborators(ticket_id: "603")
 
-      assert res |> hd |> Map.get(:name) == "Someone"
+      assert Map.get(data, :name) == "Someone"
     end
   end
 
-
   test "it can get tickets incidents" do
     use_cassette "ticket_incidents" do
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> ticket_incidents(ticket_id: "502")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> ticket_incidents(ticket_id: "502")
 
       assert length(res) == 100
     end
   end
 
-
   test "it can get ticket problems" do
     use_cassette "all_problems" do
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> ticket_problems
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> ticket_problems
 
       assert length(res) == 6
     end
   end
 
-
   test "it can autocomplete problems" do
     use_cassette "autocomplete_problems" do
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> autocomplete_problems(text: "Subject")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> autocomplete_problems(text: "Subject")
 
       assert length(res) == 2
     end
   end
 
-
   test "it can update a ticket a ticket" do
     use_cassette "update_a_ticket" do
-      ticket = Ticket.new("Test Ticket")
-      |> Ticket.set_priority("urgent")
-      |> Ticket.set_type("problem")
-      |> Ticket.set_subject("Another subject")
+      ticket =
+        Ticket.new("Test Ticket")
+        |> Ticket.set_priority("urgent")
+        |> Ticket.set_type("problem")
+        |> Ticket.set_subject("Another subject")
 
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> update_ticket(ticket: ticket, ticket_id: "595")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> update_ticket(ticket: ticket, ticket_id: "595")
 
       assert res.subject == "Another subject"
     end
   end
 
-
   test "it can merge two tickets" do
     use_cassette "merge_tickets" do
-
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> merge_tickets(target_id: "361", ids: ["344", "339"],
-                       target_comment: "Closing this", source_comment: "Combing stuff")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> merge_tickets(
+          target_id: "361",
+          ids: ["344", "339"],
+          target_comment: "Closing this",
+          source_comment: "Combing stuff"
+        )
 
       assert res.status == "queued"
       assert res.id == "f689a5f55bf847d6d6270be85d2489bf"
     end
   end
 
-
   test "it can mergeget ticket related" do
     use_cassette "ticket_related" do
-
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.test", password: "test")
-      |> ticket_related(ticket_id: "23")
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.test", password: "test")
+        |> ticket_related(ticket_id: "23")
 
       assert res.from_archive == false
       assert res.incidents == 0
     end
   end
 
-
-    test "it can fetch all tickets" do
-      use_cassette "all_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-        email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
+  test "it can fetch all tickets" do
+    use_cassette "all_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
         |> all_tickets
 
-        assert length(res.tickets) == 100
-        assert res.tickets |> hd |> Dict.get(:id) == 1
-      end
-    end
-
-
-    test "it can fetch recent tickets" do
-      use_cassette "recent_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-        email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
-        |> recent_tickets
-
-        assert res |> hd |> Dict.get(:raw_subject) == "The subject2"
-        assert length(res) == 5
-      end
-    end
-
-
-    test "it can fetch ticket all ticket for a requester" do
-      use_cassette "requester_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-          email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
-        |> show_ticket(requester_id: "4047329778")
-
-        assert res |> hd |> Dict.get(:raw_subject) == "The subject"
-        assert length(res) == 18
-      end
-    end
-
-
-    test "it can fetch ticket assigned to a user" do
-      use_cassette "assigned_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-          email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
-        |> show_ticket(assignee_id: "236084977")
-
-        assert res |> hd |> Dict.get(:raw_subject) == "Yiuiib"
-        assert length(res) == 4
-      end
-    end
-
-
-    test "it can fetch ticket cc'd to a user" do
-      use_cassette "ccd_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-          email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
-        |> show_ticket(cc_id: "236084977")
-
-        assert res |> hd |> Dict.get(:raw_subject) == "Yiuiib"
-        assert length(res) == 1
-      end
-    end
-
-
-    test "it can fetch ticket for an organization" do
-      use_cassette "organization_tickets" do
-        res = Zendesk.account(subdomain: "your_subdomain",
-          email: "email@me.com", token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2")
-        |> show_ticket(organization_id: "22016037")
-
-        assert res |> hd |> Dict.get(:raw_subject) == "This is a sample ticket requested and submitted by you"
-        assert length(res) == 50
-      end
-    end
-
-
-  test "it can get a ticket with id" do
-    use_cassette "get_ticket_with_id" do
-
-    res = Zendesk.account(subdomain: "your_subdomain",
-    email: "test@test.com", password: "test")
-    |> show_ticket(ticket_id: "587")
-
-    assert res |> Dict.get(:id) == 587
-    assert res |> Dict.get(:subject) == "The subject"
+      assert length(res.tickets) == 100
+      assert res.tickets |> hd |> Dict.get(:id) == 1
     end
   end
 
+  test "it can fetch recent tickets" do
+    use_cassette "recent_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
+        |> recent_tickets
+
+      assert res |> hd |> Dict.get(:raw_subject) == "The subject2"
+      assert length(res) == 5
+    end
+  end
+
+  test "it can fetch ticket all ticket for a requester" do
+    use_cassette "requester_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
+        |> show_ticket(requester_id: "4047329778")
+
+      assert res |> hd |> Dict.get(:raw_subject) == "The subject"
+      assert length(res) == 18
+    end
+  end
+
+  test "it can fetch ticket assigned to a user" do
+    use_cassette "assigned_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
+        |> show_ticket(assignee_id: "236084977")
+
+      assert res |> hd |> Dict.get(:raw_subject) == "Yiuiib"
+      assert length(res) == 4
+    end
+  end
+
+  test "it can fetch ticket cc'd to a user" do
+    use_cassette "ccd_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
+        |> show_ticket(cc_id: "236084977")
+
+      assert res |> hd |> Dict.get(:raw_subject) == "Yiuiib"
+      assert length(res) == 1
+    end
+  end
+
+  test "it can fetch ticket for an organization" do
+    use_cassette "organization_tickets" do
+      res =
+        Zendesk.account(
+          subdomain: "your_subdomain",
+          email: "email@me.com",
+          token: "jt82RfMETyIBzCBQwNuLeCh4YxdAps8rJeN99SW2"
+        )
+        |> show_ticket(organization_id: "22016037")
+
+      assert res |> hd |> Dict.get(:raw_subject) ==
+               "This is a sample ticket requested and submitted by you"
+
+      assert length(res) == 50
+    end
+  end
+
+  test "it can get a ticket with id" do
+    use_cassette "get_ticket_with_id" do
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.com", password: "test")
+        |> show_ticket(ticket_id: "587")
+
+      assert res |> Dict.get(:id) == 587
+      assert res |> Dict.get(:subject) == "The subject"
+    end
+  end
 
   test "it can get multiple tickets" do
     use_cassette "many_tickets" do
-
-      res = Zendesk.account(subdomain: "your_subdomain",
-      email: "test@test.com", password: "test")
-      |> show_tickets(ids: ["1", "587"])
+      res =
+        Zendesk.account(subdomain: "your_subdomain", email: "test@test.com", password: "test")
+        |> show_tickets(ids: ["1", "587"])
 
       assert res |> hd |> Dict.get(:id) == 1
       assert length(res) == 2
     end
   end
-
 end

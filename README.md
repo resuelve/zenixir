@@ -1,8 +1,7 @@
 # Zenixir
-[![Build Status](https://travis-ci.org/resuelve/zenixir.svg)](https://travis-ci.org/resuelve/zenixir)
-[![Coverage Status](https://coveralls.io/repos/resuelve/zenixir/badge.svg?branch=master&service=github)](https://coveralls.io/github/resuelve/zenixir?branch=master)
-[![Inline docs](http://inch-ci.org/github/resuelve/zenixir.svg)](http://inch-ci.org/github/resuelve/zenixir)
-[![Issue Count](https://codeclimate.com/github/resuelve/zenixir/badges/issue_count.svg)](https://codeclimate.com/github/resuelve/zenixir)
+[![Build Status](https://travis-ci.org/iver/zenixir.svg)](https://travis-ci.org/iver/zenixir)
+[![Coverage Status](https://coveralls.io/repos/iver/zenixir/badge.svg?branch=master&service=github)](https://coveralls.io/github/iver/zenixir?branch=master)
+[![Inline docs](http://inch-ci.org/github/iver/zenixir.svg)](http://inch-ci.org/github/iver/zenixir)
 
 Elixir Zendesk API Client
 
@@ -11,7 +10,7 @@ Add zenixir to your `mix.exs` deps
 
 ```elixir
 	def deps do
-	  [{:zenixir, github: "resuelve/zenixir", tag: "0.1.6"}]
+	  [{:zenixir, github: "iver/zenixir", tag: "0.1.6"}]
 	end
 ```
 
