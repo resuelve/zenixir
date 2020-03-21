@@ -1,4 +1,3 @@
-
 defmodule Zendesk.ViewApi do
   @moduledoc """
   Module that contains fucntions to deal with Zendesk views
@@ -19,7 +18,6 @@ defmodule Zendesk.ViewApi do
 
   use Zendesk.CommonApi
   alias Zendesk.View
-
 
   @doc """
   Get all the views
@@ -48,8 +46,11 @@ defmodule Zendesk.ViewApi do
   `view_id` the view id
   """
   def show_view(account, view_id: view_id) do
-    perform_request(&parse_get_view/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@get_view, [view_id]))
+    perform_request(&parse_get_view/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@get_view, [view_id])
+    )
   end
 
   @doc """
@@ -58,10 +59,13 @@ defmodule Zendesk.ViewApi do
   `view` the view to create
   """
   def create_view(account, view) do
-    perform_request(&parse_get_view/1, account: account, verb: :post,
-    endpoint: @create_view,
-    headers: headers,
-    body: View.to_json(view))
+    perform_request(&parse_get_view/1,
+      account: account,
+      verb: :post,
+      endpoint: @create_view,
+      headers: headers(),
+      body: View.to_json(view)
+    )
   end
 
   @doc """
@@ -70,10 +74,13 @@ defmodule Zendesk.ViewApi do
   `view` the view to preview
   """
   def preview_view(account, view) do
-    perform_request(&parse_get_tickets/1, account: account, verb: :post,
-    endpoint: @preview_view,
-    headers: headers,
-    body: View.to_json(view))
+    perform_request(&parse_get_tickets/1,
+      account: account,
+      verb: :post,
+      endpoint: @preview_view,
+      headers: headers(),
+      body: View.to_json(view)
+    )
   end
 
   @doc """
@@ -82,10 +89,13 @@ defmodule Zendesk.ViewApi do
   `view` the view to preview
   """
   def count_view_preview(account, view) do
-    perform_request(&parse_view_count/1, account: account, verb: :post,
-    endpoint: @preview_count_view,
-    headers: headers,
-    body: View.to_json(view))
+    perform_request(&parse_view_count/1,
+      account: account,
+      verb: :post,
+      endpoint: @preview_count_view,
+      headers: headers(),
+      body: View.to_json(view)
+    )
   end
 
   @doc """
@@ -96,10 +106,13 @@ defmodule Zendesk.ViewApi do
   `view` the view to update
   """
   def update_view(account, view_id: view_id, view: view) do
-    perform_request(&parse_get_view/1, account: account, verb: :put,
-    endpoint: ExPrintf.sprintf(@update_view, [view_id]),
-    headers: headers,
-    body: View.to_json(view))
+    perform_request(&parse_get_view/1,
+      account: account,
+      verb: :put,
+      endpoint: ExPrintf.sprintf(@update_view, [view_id]),
+      headers: headers(),
+      body: View.to_json(view)
+    )
   end
 
   @doc """
@@ -108,8 +121,11 @@ defmodule Zendesk.ViewApi do
   `view_id` the view id to update
   """
   def delete_view(account, view_id: view_id) do
-    perform_request(&parse_delete_view/1, account: account, verb: :delete,
-    endpoint: ExPrintf.sprintf(@update_view, [view_id]))
+    perform_request(&parse_delete_view/1,
+      account: account,
+      verb: :delete,
+      endpoint: ExPrintf.sprintf(@update_view, [view_id])
+    )
   end
 
   @doc """
@@ -118,8 +134,11 @@ defmodule Zendesk.ViewApi do
   `view_id` the view id to execute
   """
   def execute_view(account, view_id: view_id) do
-    perform_request(&parse_get_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@execute_view, [view_id]))
+    perform_request(&parse_get_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@execute_view, [view_id])
+    )
   end
 
   @doc """
@@ -128,8 +147,11 @@ defmodule Zendesk.ViewApi do
   `view_id` the view id to execute
   """
   def view_tickets(account, view_id: view_id) do
-    perform_request(&parse_get_view_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@view_tickets, [view_id]))
+    perform_request(&parse_get_view_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@view_tickets, [view_id])
+    )
   end
 
   @doc """
@@ -139,8 +161,12 @@ defmodule Zendesk.ViewApi do
   """
   def count_views(account, ids: ids) do
     ids_strings = Enum.join(ids, ",")
-    perform_request(&parse_views_count/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@count_views, [ids_strings]))
+
+    perform_request(&parse_views_count/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@count_views, [ids_strings])
+    )
   end
 
   @doc """
@@ -149,15 +175,16 @@ defmodule Zendesk.ViewApi do
   `view_ids` the view ids to count
   """
   def count_view(account, view_id: view_id) do
-    perform_request(&parse_view_count/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@count_view, [view_id]))
+    perform_request(&parse_view_count/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@count_view, [view_id])
+    )
   end
 
   # Private
 
-  defp headers do
-    ["Content-Type": "application/json"]
-  end
+  defp headers, do: ["Content-Type": "application/json"]
 
   defp parse_views_count(response) do
     Poison.Parser.parse(response, keys: :atoms) |> elem(1) |> Dict.get(:view_counts)
@@ -186,5 +213,4 @@ defmodule Zendesk.ViewApi do
   defp parse_get_view_tickets(response) do
     Zendesk.Ticket.from_json_array(response, :tickets)
   end
-
 end

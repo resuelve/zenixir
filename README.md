@@ -1,38 +1,39 @@
 # Zenixir
-[![Build Status](https://travis-ci.org/oarrabi/zenixir.svg)](https://travis-ci.org/oarrabi/zenixir)
-[![Coverage Status](https://coveralls.io/repos/oarrabi/zenixir/badge.svg?branch=master&service=github)](https://coveralls.io/github/oarrabi/zenixir?branch=master)
-[![Deps Status](https://beta.hexfaktor.org/badge/all/github/oarrabi/zenixir.svg)](https://beta.hexfaktor.org/github/oarrabi/zenixir)
-[![Inline docs](http://inch-ci.org/github/oarrabi/zenixir.svg)](http://inch-ci.org/github/oarrabi/zenixir)
-[![Issue Count](https://codeclimate.com/github/oarrabi/zenixir/badges/issue_count.svg)](https://codeclimate.com/github/oarrabi/zenixir)
+[![Build Status](https://travis-ci.org/resuelve/zenixir.svg)](https://travis-ci.org/resuelve/zenixir)
+[![Coverage Status](https://coveralls.io/repos/resuelve/zenixir/badge.svg?branch=master&service=github)](https://coveralls.io/github/resuelve/zenixir?branch=master)
+[![Inline docs](http://inch-ci.org/github/resuelve/zenixir.svg)](http://inch-ci.org/github/resuelve/zenixir)
+[![Issue Count](https://codeclimate.com/github/resuelve/zenixir/badges/issue_count.svg)](https://codeclimate.com/github/resuelve/zenixir)
 
 Elixir Zendesk API Client
 
 ## Installation
 Add zenixir to your `mix.exs` deps
 
+```elixir
 	def deps do
-	  [{:zenixir, github: "oarrabi/zenixir"}]
+	  [{:zenixir, github: "resuelve/zenixir", tag: "0.1.6"}]
 	end
+```
 
 ## Documentation
 All the methods are documented, for documentation, check each of the available functions.
 In iex,
 
-`h Zendesk.CommentApi.all_comments`
+`iex> h Zendesk.CommentApi.all_comments`
 
 ## Usage
 Add `use Zendesk` to your file
 
 Create a zendesk account
 
-```
+```elixir
 account = Zendesk.account(subdomain: "your_subdomain",
 email: "test@zendesk.com",
 password: "test")
 ```
 
 Pipe it (or pass it) to an api call
-```
+```elixir
 account |> all_users
 ```
 
@@ -43,7 +44,7 @@ Bellow is a description on how to use the provided api functions, if you don't f
 ### Zendesk Account
 Create a request with a `subdomain`, `email` and `password`:
 
-```
+```elixir
 account = Zendesk.account(subdomain: "your_subdomain",
 email: "test@zendesk.com",
 password: "test")
@@ -51,7 +52,7 @@ password: "test")
 
 Create a request with a `subdomain`, `email` and `token`:
 
-```
+```elixir
 account = Zendesk.account(subdomain: "your_subdomain",
 email: "test@zendesk.com",
 token: "THE_TOKEN")
@@ -64,7 +65,7 @@ Once you have an account you can use it with all consequent api calls
 
 Examples:
 
-```
+```elixir
 account |> account_settings
 ```
 
@@ -75,7 +76,7 @@ account |> account_settings
 
 Examples:
 
-```
+```elixir
 account |>
 upload_file(file_name: "the_file_name", file_path: "path_to_file")
 
@@ -90,7 +91,7 @@ account |> delete_attachment(attachment_id: "Attachment_ID")
 
 Examples:
 
-```
+```elixir
 account |> all_brands
 
 account |> show_brand(brand_id: "Brand_ID")
@@ -104,7 +105,7 @@ account |> show_brand(brand_id: "Brand_ID")
 
 Examples:
 
-```
+```elixir
 account |> all_comments(ticket_id: "Ticket_ID")
 account |> all_comments(request_id: "Request_ID")
 
@@ -124,7 +125,7 @@ comment_id: "Comment_id")
 
 Examples:
 
-```
+```elixir
 account |> all_group_membership
 account |> all_group_membership(user_id: "User_ID")
 account |> all_group_membership(group_id: "Group_ID")
@@ -140,7 +141,7 @@ user_id: "User_ID")
 
 Examples:
 
-```
+```elixir
 account |> all_groups
 
 show_group(group_id: "Group_ID")
@@ -153,7 +154,7 @@ show_group(group_id: "Group_ID")
 
 Examples:
 
-```
+```elixir
 account |> all_organizations
 account |> all_organizations(user_id: "User_ID")
 
@@ -165,7 +166,7 @@ account |> show_organization(organization_id: "Organization_ID")
 ### Requests
 Requests are created incrementally calling, for example
 
-```
+```elixir
 request = Request.new(subject: "Hello", comment: "The description")
     |> Request.set_status("hold")
     |> Request.set_priority("high")
@@ -189,7 +190,7 @@ The returned `request` can be used to create or update a request
 
 Examples:
 
-```
+```elixir
 account |> all_requests
 account |> all_requests(statuses: ["open", "closed"])
 account |> all_requests(user_id: "4096938127")
@@ -209,7 +210,7 @@ account |> update_request(id: "Request_ID", request: request)
 
 Examples:
 
-```
+```elixir
 account |> search(type: :user, query: "query")
 account |> search(query: "type:ticket query")
 ```
@@ -222,7 +223,7 @@ account |> search(query: "type:ticket query")
 
 Examples:
 
-```
+```elixir
 account |> all_tags
 account |> all_tags(ticket_id: "Ticket_ID")
 account |> all_tags(user_id: "User_ID")
@@ -245,7 +246,7 @@ account |> delete_tags(ticket_id: "Ticket_ID", tags: tags_list)
 
 Examples:
 
-```
+```elixir
 account |> all_ticket_fields
 
 field = TicketField.new(type: "tagger", title: "The title")
@@ -264,7 +265,7 @@ account |> delete_ticket_field(field_id: "Field_ID")
 
 Examples:
 
-```
+```elixir
 account |> all_metrics
 account |> all_metrics(ticket_id: "Ticket_ID")
 
@@ -274,7 +275,7 @@ account |> show_metric(metric_id: "Metric_ID")
 ### Tickets
 Tickets are created incrementally calling, for example
 
-```
+```elixir
 ticket = Ticket.new("Test Ticket")
       |> Ticket.set_priority("urgent")
       |> Ticket.set_type("problem")
@@ -298,7 +299,7 @@ The returned `ticket` can be used to create or update a ticket
 
 Examples:
 
-```
+```elixir
 account |> create_ticket(ticket: ticket)
 
 account |> update_ticket(ticket: ticket, ticket_id: "Ticket_ID")
@@ -336,7 +337,7 @@ account |> autocomplete_problems(text: "Subject")
 
 Examples:
 
-```
+```elixir
 account |> all_user_fields
 ```
 
@@ -350,7 +351,7 @@ account |> all_user_fields
 
 Examples:
 
-```
+```elixir
 account |> all_users
 account |> all_users(group_id: "Group_ID")
 account |> all_users(organization_id: "Organization_ID")
@@ -369,7 +370,7 @@ account |> current_user
 ### View
 Views are created incrementally calling, for example
 
-```
+```elixir
 view = View.new(title: "The Title")
 	|> View.add_condition(type: :any, field: "status",
 	operator: "is", value: "open")
@@ -394,7 +395,7 @@ The returned `view` can be used to create or update a view
 
 Examples:
 
-```
+```elixir
 account |> all_views
 
 account |> active_views
@@ -437,7 +438,7 @@ Zendesk.Client.request(resource: "organization_memberships.json")
 
 A post request can be done with:
 
-```
+```elixir
 account |>
 Client.request(resource: "tickets/1/tags.json",
 verb: :post,
