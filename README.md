@@ -2,6 +2,8 @@
 [![Build Status](https://travis-ci.org/iver/zenixir.svg?branch=master)](https://travis-ci.org/iver/zenixir)
 [![Coverage Status](https://coveralls.io/repos/iver/zenixir/badge.svg?branch=master&service=github)](https://coveralls.io/github/iver/zenixir?branch=master)
 [![Inline docs](http://inch-ci.org/github/iver/zenixir.svg)](http://inch-ci.org/github/iver/zenixir)
+[![Maintainability](https://api.codeclimate.com/v1/badges/bd9d33f964f89ab9705a/maintainability)](https://codeclimate.com/github/iver/zenixir/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/bd9d33f964f89ab9705a/test_coverage)](https://codeclimate.com/github/iver/zenixir/test_coverage)
 
 Elixir Zendesk API Client
 
