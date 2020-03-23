@@ -5,7 +5,6 @@ defmodule Zendesk.Account do
 
   defstruct [:email, :password, :subdomain, :domain, :token]
 
-
   @doc """
   Get the full url
 
@@ -13,7 +12,9 @@ defmodule Zendesk.Account do
 
   `endpoint`: the resource endpoint
   """
-  def full_url(account, <<"https://">> <> rest = endpoint), do: URI.merge(domain(account), endpoint) |> to_string()
+  def full_url(account, <<"https://">> <> _rest = endpoint),
+    do: URI.merge(domain(account), endpoint) |> to_string()
+
   def full_url(account, endpoint), do: domain(account) <> endpoint
 
   @doc """
@@ -22,7 +23,7 @@ defmodule Zendesk.Account do
   `subdomain`: the subdomain
   """
   def domain(%Zendesk.Account{subdomain: subdomain})
-  when not is_nil subdomain  do
+      when not is_nil(subdomain) do
     "https://#{subdomain}.zendesk.com/api/v2"
   end
 
@@ -32,7 +33,7 @@ defmodule Zendesk.Account do
   `domain`: the domain
   """
   def domain(%Zendesk.Account{domain: domain})
-  when not is_nil domain  do
+      when not is_nil(domain) do
     domain
   end
 
@@ -44,10 +45,9 @@ defmodule Zendesk.Account do
   `password`: the zendesk password
   """
   def auth(%Zendesk.Account{email: email, password: password})
-  when not is_nil password  do
-     [hackney: [basic_auth: {email, password}]]
+      when not is_nil(password) do
+    [hackney: [basic_auth: {email, password}]]
   end
-
 
   @doc """
   Get the Auth for a Zendesk.Account
@@ -57,8 +57,8 @@ defmodule Zendesk.Account do
   `token`: the zendesk auth token
   """
   def auth(%Zendesk.Account{email: email, token: token})
-  when not is_nil email do
-     [hackney: [basic_auth: {email <> "/token", token}]]
+      when not is_nil(email) do
+    [hackney: [basic_auth: {email <> "/token", token}]]
   end
 
   @doc """
@@ -67,7 +67,7 @@ defmodule Zendesk.Account do
   `token`: zendesk oauth token
   """
   def auth(%Zendesk.Account{token: token})
-  when not is_nil token do
+      when not is_nil(token) do
     [{"Authorization", "Bearer #{token}"}]
   end
 end

@@ -1,4 +1,3 @@
-
 defmodule Zendesk.TicketFieldsApi do
   @moduledoc """
   Module that contains fucntions to deal with Zendesk ticket fields
@@ -11,7 +10,6 @@ defmodule Zendesk.TicketFieldsApi do
 
   use Zendesk.CommonApi
   alias Zendesk.TicketField
-
 
   @doc """
   Get all ticket fields
@@ -26,8 +24,11 @@ defmodule Zendesk.TicketFieldsApi do
   `ticket_id` ticked id to return fields for
   """
   def all_ticket_fields(account, ticket_id: ticket_id) do
-    perform_request(&parse_ticket_field/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@get_field, [ticket_id]))
+    perform_request(&parse_ticket_field/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@get_field, [ticket_id])
+    )
   end
 
   @doc """
@@ -38,8 +39,13 @@ defmodule Zendesk.TicketFieldsApi do
   def create_ticket_field(account, ticket_field: ticket_field) do
     json = TicketField.to_json(%{ticket_field: ticket_field})
 
-    perform_request(&parse_ticket_field/1, account: account, verb: :post,
-    body: json, endpoint: @create_field, headers: headers)
+    perform_request(&parse_ticket_field/1,
+      account: account,
+      verb: :post,
+      body: json,
+      endpoint: @create_field,
+      headers: headers()
+    )
   end
 
   @doc """
@@ -52,10 +58,13 @@ defmodule Zendesk.TicketFieldsApi do
   def update_ticket_field(account, field_id: field_id, ticket_field: ticket_field) do
     json = TicketField.to_json(%{ticket_field: ticket_field})
 
-    perform_request(&parse_ticket_field/1, account: account, verb: :put,
-    body: json,
-    endpoint: ExPrintf.sprintf(@update_field, [field_id]),
-    headers: headers)
+    perform_request(&parse_ticket_field/1,
+      account: account,
+      verb: :put,
+      body: json,
+      endpoint: ExPrintf.sprintf(@update_field, [field_id]),
+      headers: headers()
+    )
   end
 
   @doc """
@@ -64,8 +73,11 @@ defmodule Zendesk.TicketFieldsApi do
   `field_id` field id to delelte
   """
   def delete_ticket_field(account, field_id: field_id) do
-    perform_request(&parse_ticket_delete/1, account: account, verb: :delete,
-    endpoint: ExPrintf.sprintf(@get_field, [field_id]))
+    perform_request(&parse_ticket_delete/1,
+      account: account,
+      verb: :delete,
+      endpoint: ExPrintf.sprintf(@get_field, [field_id])
+    )
   end
 
   # Private
@@ -85,5 +97,4 @@ defmodule Zendesk.TicketFieldsApi do
   defp parse_ticket_field(response) do
     Zendesk.TicketField.from_json(response)
   end
-
 end

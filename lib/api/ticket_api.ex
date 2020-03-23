@@ -1,4 +1,3 @@
-
 defmodule Zendesk.TicketApi do
   @moduledoc """
   Module that contains fucntions to deal with Zendesk tickets
@@ -31,7 +30,14 @@ defmodule Zendesk.TicketApi do
   """
   def create_ticket(account, ticket: ticket) do
     json = Ticket.to_json(%{ticket: ticket})
-    perform_request(&parse_single_ticket/1, account: account, verb: :post, endpoint: @create_endpoint, body: json, headers: headers)
+
+    perform_request(&parse_single_ticket/1,
+      account: account,
+      verb: :post,
+      endpoint: @create_endpoint,
+      body: json,
+      headers: headers()
+    )
   end
 
   @doc """
@@ -45,10 +51,14 @@ defmodule Zendesk.TicketApi do
   """
   def update_ticket(account, ticket: ticket, ticket_id: ticket_id) do
     json = Ticket.to_json(%{ticket: ticket})
-    perform_request(&parse_single_ticket/1, account: account,
-    verb: :put,
-    endpoint: ExPrintf.sprintf(@ticket_with_id, [ticket_id]),
-    body: json, headers: headers)
+
+    perform_request(&parse_single_ticket/1,
+      account: account,
+      verb: :put,
+      endpoint: ExPrintf.sprintf(@ticket_with_id, [ticket_id]),
+      body: json,
+      headers: headers()
+    )
   end
 
   @doc """
@@ -57,7 +67,11 @@ defmodule Zendesk.TicketApi do
   `account`: The Zendesk.Account to use
   """
   def all_tickets(account) do
-    perform_request(&Zendesk.Ticket.incremental_from_json_array/1, account: account, verb: :get, endpoint: @all_endpoint)
+    perform_request(&Zendesk.Ticket.incremental_from_json_array/1,
+      account: account,
+      verb: :get,
+      endpoint: @all_endpoint
+    )
   end
 
   @doc """
@@ -69,8 +83,10 @@ defmodule Zendesk.TicketApi do
   """
   def next_url(account, url) do
     perform_request(&Zendesk.Ticket.incremental_from_json_array/1,
-    account: account, verb: :get,
-    endpoint: url)
+      account: account,
+      verb: :get,
+      endpoint: url
+    )
   end
 
   @doc """
@@ -81,9 +97,11 @@ defmodule Zendesk.TicketApi do
   `start_time` : A Unix timestamp specifying the time to return all tickets from
   """
   def incremental_tickets(account, start_time) do
-    perform_request(&Zendesk.Ticket.incremental_from_json_array/1, account: account,
-    verb: :get,
-    endpoint: ExPrintf.sprintf(@incremental_tickets, [start_time]))
+    perform_request(&Zendesk.Ticket.incremental_from_json_array/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@incremental_tickets, [start_time])
+    )
   end
 
   @doc """
@@ -92,7 +110,11 @@ defmodule Zendesk.TicketApi do
   `account`: The Zendesk.Account to use
   """
   def recent_tickets(account) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get, endpoint: @recent_endpoint)
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: @recent_endpoint
+    )
   end
 
   @doc """
@@ -103,7 +125,11 @@ defmodule Zendesk.TicketApi do
   `ticket_id`: Thec ticket ID to delete
   """
   def delete_ticket(account, ticket_id: ticket_id) do
-    perform_request(&parse_delete_ticket/1, account: account, verb: :delete, endpoint: ticket_url(ticket_id))
+    perform_request(&parse_delete_ticket/1,
+      account: account,
+      verb: :delete,
+      endpoint: ticket_url(ticket_id)
+    )
   end
 
   @doc """
@@ -117,8 +143,7 @@ defmodule Zendesk.TicketApi do
     ids_strings = Enum.join(ids, ",")
     url = ExPrintf.sprintf(@many_tickets, [ids_strings])
 
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: url)
+    perform_request(&parse_multiple_tickets/1, account: account, verb: :get, endpoint: url)
   end
 
   @doc """
@@ -129,8 +154,11 @@ defmodule Zendesk.TicketApi do
   `requester_id`: The requester ID to get the ticket for
   """
   def show_ticket(account, requester_id: requester_id) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@by_requester, [requester_id]))
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@by_requester, [requester_id])
+    )
   end
 
   @doc """
@@ -141,8 +169,11 @@ defmodule Zendesk.TicketApi do
   `ticket_id`: Thec ticket ID to fetch
   """
   def show_ticket(account, ticket_id: ticket_id) do
-    perform_request(&parse_single_ticket/1, account: account, verb: :get,
-    endpoint: ticket_url(ticket_id))
+    perform_request(&parse_single_ticket/1,
+      account: account,
+      verb: :get,
+      endpoint: ticket_url(ticket_id)
+    )
   end
 
   @doc """
@@ -153,8 +184,11 @@ defmodule Zendesk.TicketApi do
   `assignee_id`: The assignee ID to get the ticket for
   """
   def show_ticket(account, assignee_id: assignee_id) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@by_assignee, [assignee_id]))
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@by_assignee, [assignee_id])
+    )
   end
 
   @doc """
@@ -165,8 +199,11 @@ defmodule Zendesk.TicketApi do
   `cc_id`: The cc id of the user to get the ticket for
   """
   def show_ticket(account, cc_id: cc_id) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@by_cc, [cc_id]))
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@by_cc, [cc_id])
+    )
   end
 
   @doc """
@@ -177,8 +214,11 @@ defmodule Zendesk.TicketApi do
   `organization_id`: The organization_id to get the tickets for
   """
   def show_ticket(account, organization_id: organization_id) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@for_organization, [organization_id]))
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@for_organization, [organization_id])
+    )
   end
 
   @doc """
@@ -189,8 +229,11 @@ defmodule Zendesk.TicketApi do
   `ticket_id`: The ticket ID to get related tickets for
   """
   def ticket_related(account, ticket_id: ticket_id) do
-    perform_request(&parse_related_tickets_info/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@related_tickets, [ticket_id]))
+    perform_request(&parse_related_tickets_info/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@related_tickets, [ticket_id])
+    )
   end
 
   @doc """
@@ -201,8 +244,11 @@ defmodule Zendesk.TicketApi do
   `ticket_id`: The ticket ID to get collaborators for
   """
   def ticket_collaborators(account, ticket_id: ticket_id) do
-    perform_request(&parse_collaborators/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@ticket_collaborators, [ticket_id]))
+    perform_request(&parse_collaborators/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@ticket_collaborators, [ticket_id])
+    )
   end
 
   @doc """
@@ -213,8 +259,11 @@ defmodule Zendesk.TicketApi do
   `ticket_id`: The ticket ID to get the incidents for
   """
   def ticket_incidents(account, ticket_id: ticket_id) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@ticket_incidents, [ticket_id]))
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@ticket_incidents, [ticket_id])
+    )
   end
 
   @doc """
@@ -223,8 +272,11 @@ defmodule Zendesk.TicketApi do
   `account`: The Zendesk.Account to use
   """
   def ticket_problems(account) do
-    perform_request(&parse_multiple_tickets/1, account: account, verb: :get,
-    endpoint: @all_problems)
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :get,
+      endpoint: @all_problems
+    )
   end
 
   @doc """
@@ -235,11 +287,13 @@ defmodule Zendesk.TicketApi do
   `text`: The text to search for
   """
   def autocomplete_problems(account, text: text) do
-    perform_request(&parse_multiple_tickets/1, account: account,
-    verb: :post,
-    endpoint: @autocomplete_problems,
-    body: autocomplete_body(text: text),
-    headers: headers)
+    perform_request(&parse_multiple_tickets/1,
+      account: account,
+      verb: :post,
+      endpoint: @autocomplete_problems,
+      body: autocomplete_body(text: text),
+      headers: headers()
+    )
   end
 
   @doc """
@@ -255,34 +309,38 @@ defmodule Zendesk.TicketApi do
 
   `source_comment`: The comment to add to the source tickets
   """
-  def merge_tickets(account, target_id: target_id, ids: ids,
-                             target_comment: target_comment, source_comment: source_comment) do
-
+  def merge_tickets(account,
+        target_id: target_id,
+        ids: ids,
+        target_comment: target_comment,
+        source_comment: source_comment
+      ) do
     perform_request(&parse_job_status_ticket/1,
-    account: account, verb: :post,
-    endpoint: ExPrintf.sprintf(@merge_tickets, [target_id]),
-    body: merge_tickets_body(ids, target_comment, source_comment),
-    headers: headers)
+      account: account,
+      verb: :post,
+      endpoint: ExPrintf.sprintf(@merge_tickets, [target_id]),
+      body: merge_tickets_body(ids, target_comment, source_comment),
+      headers: headers()
+    )
   end
 
   # Private
 
   defp merge_tickets_body(ids, target_comment, source_comment) do
-     %{ids: ids, target_comment: target_comment, source_comment: source_comment}
-     |> Poison.encode |> elem(1)
+    %{ids: ids, target_comment: target_comment, source_comment: source_comment}
+    |> Poison.encode()
+    |> elem(1)
   end
 
   defp autocomplete_body(map) do
-    Enum.into(map, %{}) |> Poison.encode |> elem(1)
+    Enum.into(map, %{}) |> Poison.encode() |> elem(1)
   end
 
   defp ticket_url(id) do
     ExPrintf.sprintf(@ticket_with_id, [id])
   end
 
-  defp headers do
-    ["Content-Type": "application/json"]
-  end
+  defp headers, do: ["Content-Type": "application/json"]
 
   defp parse_delete_ticket(response) do
     response
@@ -307,5 +365,4 @@ defmodule Zendesk.TicketApi do
   defp parse_multiple_tickets(response) do
     Zendesk.Ticket.from_json_array(response)
   end
-
 end

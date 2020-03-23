@@ -1,4 +1,3 @@
-
 defmodule Zendesk.RequestApi do
   @moduledoc """
   Module that contains fucntions to deal with Zendesk requests
@@ -11,7 +10,6 @@ defmodule Zendesk.RequestApi do
   @search_requests "/requests/search.json?query=\"%s\""
   @single_request "/requests/%s.json"
   use Zendesk.CommonApi
-
 
   @doc """
   Get all the requests
@@ -27,8 +25,12 @@ defmodule Zendesk.RequestApi do
   """
   def all_requests(account, statuses: statuses) do
     st = Enum.join(statuses, ",")
-    perform_request(&parse_requests/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@request_status, [st]))
+
+    perform_request(&parse_requests/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@request_status, [st])
+    )
   end
 
   @doc """
@@ -37,8 +39,11 @@ defmodule Zendesk.RequestApi do
   `user_id` user id
   """
   def all_requests(account, user_id: user_id) do
-    perform_request(&parse_requests/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@request_for_user, [user_id]))
+    perform_request(&parse_requests/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@request_for_user, [user_id])
+    )
   end
 
   @doc """
@@ -47,8 +52,11 @@ defmodule Zendesk.RequestApi do
   `organization_id` organization id to return requests for
   """
   def all_requests(account, organization_id: organization_id) do
-    perform_request(&parse_requests/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@request_for_organization, [organization_id]))
+    perform_request(&parse_requests/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@request_for_organization, [organization_id])
+    )
   end
 
   @doc """
@@ -57,8 +65,11 @@ defmodule Zendesk.RequestApi do
   `query` query to perform
   """
   def search_requests(account, query: query) do
-    perform_request(&parse_requests/1, account: account, verb: :get,
-    endpoint: URI.encode(ExPrintf.sprintf(@search_requests, [query])))
+    perform_request(&parse_requests/1,
+      account: account,
+      verb: :get,
+      endpoint: URI.encode(ExPrintf.sprintf(@search_requests, [query]))
+    )
   end
 
   @doc """
@@ -67,8 +78,11 @@ defmodule Zendesk.RequestApi do
   `request_id` request id to show
   """
   def show_request(account, request_id: request_id) do
-    perform_request(&parse_request/1, account: account, verb: :get,
-    endpoint: ExPrintf.sprintf(@single_request, [request_id]))
+    perform_request(&parse_request/1,
+      account: account,
+      verb: :get,
+      endpoint: ExPrintf.sprintf(@single_request, [request_id])
+    )
   end
 
   @doc """
@@ -78,8 +92,14 @@ defmodule Zendesk.RequestApi do
   """
   def create_request(account, request: request) do
     json = Zendesk.Request.to_json(%{request: request})
-    perform_request(&parse_request/1, account: account, verb: :post, endpoint: @endpoint,
-    body: json, headers: headers)
+
+    perform_request(&parse_request/1,
+      account: account,
+      verb: :post,
+      endpoint: @endpoint,
+      body: json,
+      headers: headers()
+    )
   end
 
   @doc """
@@ -91,16 +111,19 @@ defmodule Zendesk.RequestApi do
   """
   def update_request(account, request_id: request_id, request: request) do
     json = Zendesk.Request.to_json(%{request: request})
-    perform_request(&parse_request/1, account: account, verb: :put,
-    endpoint: ExPrintf.sprintf(@single_request, [request_id]),
-    body: json, headers: headers)
+
+    perform_request(&parse_request/1,
+      account: account,
+      verb: :put,
+      endpoint: ExPrintf.sprintf(@single_request, [request_id]),
+      body: json,
+      headers: headers()
+    )
   end
 
   # Private
 
-  defp headers do
-    ["Content-Type": "application/json"]
-  end
+  defp headers, do: ["Content-Type": "application/json"]
 
   defp parse_request(response) do
     Zendesk.Request.from_json(response)
@@ -109,5 +132,4 @@ defmodule Zendesk.RequestApi do
   defp parse_requests(response) do
     Zendesk.Request.from_json_array(response)
   end
-
 end
